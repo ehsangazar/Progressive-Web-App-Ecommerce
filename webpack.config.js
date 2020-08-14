@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const OptimizeCssAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const Environment = process.env.NODE_ENV || 'development'
 const isDev = Environment === 'development'
@@ -77,6 +77,9 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: "public" }],
     }),
   ],
 };

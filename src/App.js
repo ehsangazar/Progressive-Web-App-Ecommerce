@@ -14,9 +14,11 @@ import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import OrdersScreen from './screens/OrdersScreen';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { hot } from "react-hot-loader/root";
 
-function App() {
+const App = () => {
   const userSignin = useSelector((state) => state.userSignin);
   const { userInfo } = userSignin;
 
@@ -26,6 +28,34 @@ function App() {
   const closeMenu = () => {
     document.querySelector('.sidebar').classList.remove('open');
   };
+
+  const _registerServiceWorkers = () => {
+    console.log('debug _registerServiceWorkers')
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/service-worker.js").then(
+        (registration) => {
+          // Registration was successful
+          console.log(
+            "debug ServiceWorker registration successful with scope: ",
+            registration.scope
+          );
+
+          window.addEventListener('online', () => {
+            toast.info('You are back online again')
+          })
+          window.addEventListener('offline', () => {
+            toast.error("You are offline, please check your connectivity");
+          })
+
+        },
+        (err) => {
+          // registration failed :(
+          console.log("debug ServiceWorker registration failed: ", err);
+        }
+      );
+    }
+  }
+
   return (
     <BrowserRouter>
       <div className="grid-container">
@@ -54,6 +84,27 @@ function App() {
             )}
           </div>
         </header>
+        <div className="service-workers">
+          <button onClick={_registerServiceWorkers}>
+            Registering Service Workers
+          </button>
+
+          {/* <br />
+          <button onClick={_syncInBackground}>Background Sync</button>
+
+          <br />
+          <button onClick={_notifyUser}>
+            Make Background Sync Automatic And Notify User for Network
+          </button>
+
+          <br />
+          <button onClick={_pushNotification}>
+            Push Notification Initialization
+          </button>
+
+          <br />
+          <button onClick={_initialOneSignal}>One Signal</button> */}
+        </div>
         <aside className="sidebar">
           <h3>Shopping Categories</h3>
           <button className="sidebar-close-button" onClick={closeMenu}>
@@ -87,6 +138,17 @@ function App() {
           </div>
         </main>
         <footer className="footer">All right reserved.</footer>
+        <ToastContainer
+          position="bottom-left"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </div>
     </BrowserRouter>
   );
